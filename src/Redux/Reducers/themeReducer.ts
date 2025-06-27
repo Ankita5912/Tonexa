@@ -4,7 +4,13 @@ import {
   PURPLE_THEME,
   GRAY_THEME,
 } from "../Actions/themeAction";
-import type { ThemeActionTypes, ThemePayload } from "../Actions/themeAction";
+import type { ThemeActionTypes } from "../Actions/themeAction";
+
+export interface ThemePayload {
+  primaryColor: string;
+  secondaryColor: string;
+  textColor: string;
+}
 
 const initialState: ThemePayload = {
   primaryColor: "#ffffff",
