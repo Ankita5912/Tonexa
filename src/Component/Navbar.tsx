@@ -1,7 +1,16 @@
 import { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import TonexaLogo from "../assets/TonexaLogo.png";
-import { Moon, Sun, Bell, Search, EllipsisVertical } from "lucide-react";
+import {
+  Moon,
+  Sun,
+  Bell,
+  Search,
+  EllipsisVertical,
+  Settings,
+  Palette,
+  User,
+} from "lucide-react";
 import Notification from "./Notification";
 import { useSelector, useDispatch } from "react-redux";
 import { darkMode, lightMode } from "../Redux/Actions/modeActions";
@@ -13,6 +22,9 @@ import {
   purpleTheme,
   grayTheme,
 } from "../Redux/Actions/themeAction";
+import Login from "../Pages/Login";
+import SignUp from "../Pages/SignUp";
+import Button from "./Button";
 
 export default function Navbar() {
   const profileRef = useRef<HTMLDivElement>(null);
@@ -21,6 +33,7 @@ export default function Navbar() {
   const dispatch = useDispatch<AppDispatch>();
 
   const theme = useSelector((state: RootState) => state.theme);
+  const user = useSelector((state: RootState) => state.auth.user);
 
   const [notification, setNotification] = useState<boolean>(false);
   const [profileOption, setprofileOption] = useState<boolean>(false);
@@ -36,17 +49,17 @@ export default function Navbar() {
   const handleToggle = () => dispatch(mode ? lightMode() : darkMode());
 
   //type of navSubitems
-  interface NavSubItem {
-    text: string;
-    isActive: boolean;
-    path: string;
-  }
+  // interface NavSubItem {
+  //   text: string;
+  //   isActive: boolean;
+  //   path: string;
+  // }
 
   //type of Navitem
   interface NavItem {
     img: string;
     Name: string;
-    NavsubItems: NavSubItem[];
+    // NavsubItems: NavSubItem[];
     profile: string;
   }
 
@@ -54,30 +67,34 @@ export default function Navbar() {
   const navitems: NavItem = {
     img: TonexaLogo,
     Name: "Tonexa",
-    NavsubItems: [
-      { text: "Home", isActive: false, path: "/home" },
-      { text: "About", isActive: false, path: "/about" },
-      { text: "Services", isActive: false, path: "/services" },
-      { text: "Contact", isActive: false, path: "/contact" },
-    ],
+    // NavsubItems: [
+    //   { text: "Home", isActive: false, path: "/home" },
+    //   { text: "About", isActive: false, path: "/about" },
+    //   { text: "Services", isActive: false, path: "/services" },
+    //   { text: "Contact", isActive: false, path: "/contact" },
+    // ],
     profile: "",
   };
 
   //destructuring some keys from object Navitems
   const { img, Name, profile } = navitems;
 
-  const [navsubItems, setNavsubItems] = useState<NavSubItem[]>(
-    navitems.NavsubItems
-  );
+  // const [navsubItems, setNavsubItems] = useState<NavSubItem[]>(
+  //   navitems.NavsubItems
+  // );
+
+  const [showLoginPage, setShowPage] = useState<boolean>(false);
+
+  const [showSignupPage, setSignupPage] = useState<boolean>(false);
 
   //function to change the color of nav bar items when particular link is open according to theme color
-  const handleLink = (index: number) => {
-    const updated = navsubItems.map((item, i) => ({
-      ...item,
-      isActive: i === index,
-    }));
-    setNavsubItems(updated);
-  };
+  // const handleLink = (index: number) => {
+  //   const updated = navsubItems.map((item, i) => ({
+  //     ...item,
+  //     isActive: i === index,
+  //   }));
+  //   setNavsubItems(updated);
+  // };
 
   //changing the theme using the actions defined in the themeAction according to the input enter by the user if that matches with the themecolor
   const handleTheme = (themecolor: string) => {
@@ -132,7 +149,7 @@ export default function Navbar() {
         </h1>
       </div>
 
-      <div
+      {/* <div
         className="lg:flex xl
       :gap-6 gap-5 hidden"
       >
@@ -148,17 +165,17 @@ export default function Navbar() {
             {item.text}
           </Link>
         ))}
-      </div>
+      </div> */}
 
       <div
-        className={`xl:w-xs sm:w-2xs w-32 py-1 px-2.5 pl-3 rounded-md sm:h-8 h-6 flex  items-center ${
-          mode ? "bg-black/20" : "bg-[#9191912d]"
+        className={`xl:w-sm sm:w-2xs w-32 py-1 px-2.5 pl-3 rounded-xl sm:h-9 h-6 flex  items-center ${
+          mode ? "bg-[#eeeeeec9]" : "bg-[#282828ba]"
         }`}
       >
         <input
           type="text"
-          className="w-full outline-none h-full tracking-wide font-poppins sm:text-sm text-xs font-light"
-          placeholder="Search . . . ."
+          className="w-full outline-none h-full tracking-wide font-poppins sm:text-sm text-xs font-light placeholder:text-inherit/10 placeholder:text-3sm"
+          placeholder="What do you want to play ?"
           name="search"
           value={inputChange.inputValue}
           onChange={(e) => setInputChange({ inputValue: e.target.value })}
@@ -191,67 +208,123 @@ export default function Navbar() {
           {notification ? <Notification /> : <></>}
         </div>
 
-        <div ref={profileRef}>
-          <img
-            src={profile}
-            alt="Profile"
-            className="md:w-8 md:h-8 sm:h-7 sm:w-7 w-6 h-6  rounded-full"
-            onClick={() => {
-              setprofileOption(!profileOption);
-            }}
-          />
-          {profileOption ? (
-            <div
-              className={`fixed right-5 top-16 rounded-md bg-inherit w-fit p-6 flex flex-col gap-2 border  text-inherit ${
-                mode ? "border-black/20" : "border-white/25"
-              }`}
-            >
-              <div className="">
-                <span className="tracking-wide font-poppins text-sm antialiased">
-                  Account
-                </span>
-              </div>
-              <div>
-                <span className="tracking-wide font-poppins text-sm antialiased">
-                  Settting
-                </span>
-              </div>
-              <div className="flex flex-col gap-3">
-                <h1 className="tracking-wide font-poppins text-sm antialiased">
-                  Theme
-                </h1>
-                <div className="flex gap-3">
-                  <div
-                    className="h-6 w-6 bg-[#F46B45] rounded-full cursor-pointer"
-                    onClick={() => {
-                      handleTheme("orange");
+        {/*profile option*/}
+        {user === null ? (
+          <>
+            <div onClick={() => setShowPage(true)}><Button buttonName="Login"/></div>
+
+            {/* LOGIN BACKDROP */}
+            {showLoginPage && (
+              <div className="fixed inset-0 z-50">
+                <div
+                  className={`fixed inset-0 bg-black/5 backdrop-blur-xs`}
+                  onClick={() => setShowPage(false)}
+                ></div>
+                <div
+                  className={`flex items-center justify-center h-full ${
+                    mode ? "bg-[#b6b6b670]" : "bg-[#2828285e]"
+                  }`}
+                >
+                  <Login
+                    signUpPage={(value) => {
+                      setSignupPage(value);
+                      setShowPage(false); // Close login when opening signup
                     }}
-                  />
-                  <div
-                    className="h-6 w-6 bg-[#4776E6] rounded-full cursor-pointer"
-                    onClick={() => {
-                      handleTheme("blue");
-                    }}
-                  />
-                  <div
-                    className="h-6 w-6 bg-[#99A5FF] rounded-full cursor-pointer"
-                    onClick={() => {
-                      handleTheme("purple");
-                    }}
-                  />
-                  <div
-                    className="h-6 w-6 bg-[#E1F7F9] rounded-full cursor-pointer"
-                    onClick={() => {
-                      handleTheme("gray");
-                    }}
+                    loginPage={setShowPage}
                   />
                 </div>
               </div>
-            </div>
-          ) : (
-            <></>
-          )}
-        </div>
+            )}
+
+            {/* SIGNUP BACKDROP */}
+            {showSignupPage && (
+              <div className="fixed inset-0 z-50">
+                <div
+                  className="fixed inset-0 bg-black/5 backdrop-blur-xs"
+                  onClick={() => setSignupPage(false)}
+                ></div>
+                <div
+                  className={`flex items-center justify-center h-full shadow-2xl ${
+                    mode ? "bg-[#b6b6b6ab]" : "bg-[#2828285e]"
+                  }`}
+                >
+                  <SignUp
+                    loginPage={(value) => {
+                      setShowPage(value);
+                      setSignupPage(false); // Close signup when opening login
+                    }}
+                    signUpPage={setSignupPage}
+                  />
+                </div>
+              </div>
+            )}
+          </>
+        ) : (
+          <div ref={profileRef}>
+            <img
+              src={undefined}
+              alt="Profile"
+              className="md:w-8 md:h-8 sm:h-7 sm:w-7 w-6 h-6  rounded-full"
+              onClick={() => {
+                setprofileOption(!profileOption);
+              }}
+            />
+            {profileOption ? (
+              <div
+                className={`fixed right-5 top-16 rounded-md bg-inherit w-fit p-6 flex flex-col gap-2 border  text-inherit ${
+                  mode ? "border-black/20" : "border-white/25"
+                }`}
+              >
+                <div className="flex gap-2 items-center">
+                  <User size={16} />
+                  <span className="tracking-wide font-poppins text-sm antialiased">
+                    Account
+                  </span>
+                </div>
+                <div className="flex gap-2 items-center">
+                  <Settings size={16} strokeWidth={2} />
+                  <span className="tracking-wide font-poppins text-sm antialiased">
+                    Settting
+                  </span>
+                </div>
+                <div className="flex flex-col gap-3">
+                  <h1 className="tracking-wide font-poppins text-sm antialiased flex gap-2 items-center">
+                    <Palette size={16} />
+                    Theme
+                  </h1>
+                  <div className="flex gap-3">
+                    <div
+                      className="h-6 w-6 bg-[#F46B45] rounded-full cursor-pointer"
+                      onClick={() => {
+                        handleTheme("orange");
+                      }}
+                    />
+                    <div
+                      className="h-6 w-6 bg-[#4776E6] rounded-full cursor-pointer"
+                      onClick={() => {
+                        handleTheme("blue");
+                      }}
+                    />
+                    <div
+                      className="h-6 w-6 bg-[#99A5FF] rounded-full cursor-pointer"
+                      onClick={() => {
+                        handleTheme("purple");
+                      }}
+                    />
+                    <div
+                      className="h-6 w-6 bg-[#E1F7F9] rounded-full cursor-pointer"
+                      onClick={() => {
+                        handleTheme("gray");
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <></>
+            )}
+          </div>
+        )}
       </div>
 
       <div className="lg:hidden flex flex-row gap-2">
@@ -269,7 +342,9 @@ export default function Navbar() {
       {MobileMenu ? (
         <>
           <div
-            className={`fixed inset-0 z-40 ${mode ? ' bg-black/5' :'bg-white/10'}`}
+            className={`fixed inset-0 z-40 ${
+              mode ? " bg-black/5" : "bg-white/10"
+            }`}
             onClick={() => setMobileMenu(false)}
           />
 
@@ -277,7 +352,7 @@ export default function Navbar() {
           <div
             className={`fixed top-0 right-0 z-50 h-full w-3/4 sm:w-1/2 md:w-1/3   shadow-lg transform transition-transform duration-300 ease-in-out ${
               MobileMenu ? "translate-x-0" : "translate-x-full"
-            } ${mode ? 'bg-white text-inherit' : "bg-black text-inherit"}`}
+            } ${mode ? "bg-white text-inherit" : "bg-black text-inherit"}`}
           >
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-gray-300">
@@ -288,7 +363,7 @@ export default function Navbar() {
             </div>
 
             {/* Navigation Links */}
-            <div className="flex flex-col gap-4 p-4">
+            {/* <div className="flex flex-col gap-4 p-4">
               {navsubItems.map((item, index) => (
                 <Link
                   to={item.path}
@@ -306,14 +381,16 @@ export default function Navbar() {
                   {item.text}
                 </Link>
               ))}
-            </div>
+            </div> */}
 
             <hr className="my-2 border-gray-300" />
 
             {/* Settings & Theme */}
             <div className="p-4 flex flex-col gap-3">
               <span className="font-poppins text-sm font-medium">Account</span>
-              <span className="font-poppins text-sm font-light tracking-wide">Settings</span>
+              <span className="font-poppins text-sm font-light tracking-wide">
+                Settings
+              </span>
 
               <div className="mt-4">
                 <h3 className="font-poppins text-sm font-medium mb-2">Theme</h3>
